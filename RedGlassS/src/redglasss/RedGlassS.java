@@ -1,12 +1,17 @@
 
 package redglasss;
 
-import javax.swing.JOptionPane;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.JProgressBar;
 
+/**
+ *
+ * @author Balta XD
+ */
 //--------------------------------------------------------------el timer
 class reloj implements Runnable{
     int cuenta, veloz;
@@ -37,13 +42,14 @@ class reloj implements Runnable{
 class proceso{
     Random r;
     public final String ID;
-    public int tiempoT, Q;
+    public int tiempoT, Q, tRestante;
     
     public proceso(){
         r = new Random();
         ID = Integer.toString(r.nextInt(10000));
         tiempoT = r.nextInt(100)+50;
         Q = r.nextInt(10)+5;
+        tRestante = Q;
         System.out.println(ID+" "+tiempoT+" "+Q);
     }
 }
@@ -68,7 +74,7 @@ class creador implements Runnable{
         while(true){
             
             ref=conta.cuenta;
-            inter = r.nextInt(7);
+            inter = r.nextInt(10);
             while(conta.pasados(ref)<inter);//dormir hilo
             listos.add(new proceso());
             System.out.println("Creado nuevo");
@@ -82,10 +88,12 @@ class procesamiento implements Runnable{
      ArrayList <proceso> bloqueados; 
      reloj conta;
      creador listos;
-     int ref, bloq=0;
+     int ref, bloq=0, Q=0, tRestante=0;
+     String listaLis="ID  Restante\n", listaBloq="ID  Restante\n";
      Random r;
      
      public procesamiento() {
+         
          bloqueados = new  ArrayList<proceso>();
          bloqueados.add(new proceso());
          System.out.println("Entra reloj");
@@ -99,48 +107,106 @@ class procesamiento implements Runnable{
     }
 
 //--------------------------------------------------------------------------------RUN
-    @Override
+      @Override
     public void run() {
 //validar si hay algo en ambos arreglos antes de mandar ejecutar y sacar de bloqueo
         while(true){
-            ejecutando(listos.listos.get(0));
-            if(r.nextInt(5)== 2 && listos.listos.size()>0){
-               bloqueados.add(listos.listos.get(0));
-                System.out.println("Entró bloqueados "+listos.listos.get(0).ID);
-               listos.listos.remove(0);
-               listos.listos.trimToSize();
-            }else{
-                listos.listos.add(listos.listos.get(0));
-                listos.listos.remove(0);
-               listos.listos.trimToSize();
-            }
+            if(listos.listos.size()>0)
+           ejecutando(listos.listos.get(0));
+            else
+                System.out.println("No hay Listos");
+            
+                
+           
             if(r.nextInt(3)==1 && bloqueados.size()>0){
                 bloq=(r.nextInt(bloqueados.size()));
                listos.listos.add(bloqueados.get(bloq));
                System.out.println("Salio de bloqueados "+bloqueados.get(bloq).ID);
                bloqueados.remove(bloq);
                bloqueados.trimToSize();
+               imprimirListos();
+               imprimirBloq();
                
             }
+            
         }   
     }
     
     public void ejecutando (proceso Ejecutar){
+        int interrup =0;
         ref=conta.cuenta;
+        this.Q=Ejecutar.Q;
+        this.tRestante = Ejecutar.tRestante;
         System.out.println("Entro\nID  Total Quantum \n"+Ejecutar.ID+" "+Ejecutar.tiempoT+"   "+Ejecutar.Q);
-        while(conta.pasados(ref)<=Ejecutar.Q && Ejecutar.Q>0){
-            System.out.println(Ejecutar.tiempoT--);
-         try {
-             Thread.currentThread().sleep(1000);
-             //System.out.println(ref);
-         } catch (InterruptedException ex) {
-             Logger.getLogger(procesamiento.class.getName()).log(Level.SEVERE, null, ex);
-         }
-        }
-        System.out.println("Tiempo agotado. ¡Siguiente!");        
-    }
-}
+        while(conta.pasados(ref)<=Ejecutar.Q && Ejecutar.tRestante>0){
+            if(Ejecutar.tiempoT>0){
+                    Ejecutar.tRestante--;
+                    this.tRestante--;
+                    Ejecutar.tiempoT--;
+                    System.out.println(Ejecutar.tRestante);
+                 try {
+                     Thread.currentThread().sleep(1000);
 
+                     //System.out.println(ref);
+                 } catch (InterruptedException ex) {
+                     Logger.getLogger(procesamiento.class.getName()).log(Level.SEVERE, null, ex);
+                 }
+
+                 if(r.nextInt(5)==2 && listos.listos.size()>0){ 
+                       interrup =1;
+                       bloqueadoOListo(interrup);
+                       break;
+                    }
+                  imprimirListos();
+                       imprimirBloq();
+            }else{
+                JOptionPane.showMessageDialog(null, "El proceso "+Ejecutar.ID+" terminó","Proceso Terminado" ,
+JOptionPane.INFORMATION_MESSAGE);
+            }
+        }
+        Ejecutar.tRestante = Ejecutar.Q;
+        System.out.println("Tiempo agotado. ¡Siguiente!");
+        if(interrup==0) 
+            bloqueadoOListo(interrup);
+    }
+    
+    public void bloqueadoOListo(int señal){
+        if(señal == 1){
+             bloqueados.add(listos.listos.get(0));
+                System.out.println("Entró bloqueados "+listos.listos.get(0).ID);
+               listos.listos.remove(0);
+               listos.listos.trimToSize();
+        }else{
+           listos.listos.add(listos.listos.get(0));
+                listos.listos.remove(0);
+               listos.listos.trimToSize();
+        }
+               imprimirListos();
+               imprimirBloq();
+    }
+    public void imprimirListos(){
+        listaLis="ID   Restante";
+        if(listos.listos.size()>0){
+        for(int i=0; i<listos.listos.size(); i++){
+            listaLis += "\n"+listos.listos.get(i).ID+"   "+listos.listos.get(i).tiempoT;
+        }
+        }else
+            listaLis +="No hay listos";
+         
+    }
+     public void imprimirBloq(){
+         listaBloq="ID   Restante";
+        if(bloqueados.size()>0){
+        for(int i=0; i<bloqueados.size(); i++){
+            listaBloq += "\n"+bloqueados.get(i).ID+"   "+bloqueados.get(i).tiempoT;
+        }
+        }else
+            listaLis +="No hay listos";
+    }
+
+   
+    
+}
 public class RedGlassS {
 
     public static void main(String[] args) {
