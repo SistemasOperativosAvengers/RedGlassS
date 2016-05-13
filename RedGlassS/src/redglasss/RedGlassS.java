@@ -104,7 +104,7 @@ class procesamiento implements Runnable{
 //validar si hay algo en ambos arreglos antes de mandar ejecutar y sacar de bloqueo
         while(true){
             ejecutando(listos.listos.get(0));
-            if(r.nextInt(5)>2 && listos.listos.size()>0){
+            if(r.nextInt(5)== 2 && listos.listos.size()>0){
                bloqueados.add(listos.listos.get(0));
                 System.out.println("Entró bloqueados "+listos.listos.get(0).ID);
                listos.listos.remove(0);
@@ -114,7 +114,7 @@ class procesamiento implements Runnable{
                 listos.listos.remove(0);
                listos.listos.trimToSize();
             }
-            if(r.nextInt(3)>1 && bloqueados.size()>0){
+            if(r.nextInt(3)==1 && bloqueados.size()>0){
                 bloq=(r.nextInt(bloqueados.size()));
                listos.listos.add(bloqueados.get(bloq));
                System.out.println("Salio de bloqueados "+bloqueados.get(bloq).ID);
@@ -144,7 +144,6 @@ class procesamiento implements Runnable{
 public class RedGlassS {
 
     public static void main(String[] args) {
-        JOptionPane.showMessageDialog(null, "I'm Batman");
         procesamiento nuevo = new procesamiento();
         nuevo.run();
     }
