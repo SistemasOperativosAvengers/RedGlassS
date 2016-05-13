@@ -133,20 +133,19 @@ class procesamiento implements Runnable{
     }
     
     public void ejecutando (proceso Ejecutar){
-        int interrup =0;
-        ref=conta.cuenta;
-        this.Q=Ejecutar.Q;
+        int interrup = 0;
+        ref = conta.cuenta;
+        this.Q = Ejecutar.Q;
         this.tRestante = Ejecutar.tRestante;
         System.out.println("Entro\nID  Total Quantum \n"+Ejecutar.ID+" "+Ejecutar.tiempoT+"   "+Ejecutar.Q);
-        while(conta.pasados(ref)<=Ejecutar.Q && Ejecutar.tRestante>0){
-            if(Ejecutar.tiempoT>0){
+        while(conta.pasados(ref) <= Ejecutar.Q && Ejecutar.tRestante > 0){
+            if(Ejecutar.tiempoT > 0){
                     Ejecutar.tRestante--;
                     this.tRestante--;
                     Ejecutar.tiempoT--;
                     System.out.println(Ejecutar.tRestante);
                  try {
                      Thread.currentThread().sleep(1000);
-
                      //System.out.println(ref);
                  } catch (InterruptedException ex) {
                      Logger.getLogger(procesamiento.class.getName()).log(Level.SEVERE, null, ex);
@@ -160,8 +159,7 @@ class procesamiento implements Runnable{
                   imprimirListos();
                        imprimirBloq();
             }else{
-                JOptionPane.showMessageDialog(null, "El proceso "+Ejecutar.ID+" terminó","Proceso Terminado" ,
-JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "El proceso "+Ejecutar.ID+" terminó","Proceso Terminado" ,JOptionPane.INFORMATION_MESSAGE);
             }
         }
         Ejecutar.tRestante = Ejecutar.Q;
