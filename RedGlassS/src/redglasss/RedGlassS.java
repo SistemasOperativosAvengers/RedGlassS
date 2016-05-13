@@ -210,8 +210,6 @@ JOptionPane.INFORMATION_MESSAGE);
 public class RedGlassS {
 
     public static void main(String[] args) {
-        procesamiento nuevo = new procesamiento();
-        nuevo.run();
     }
     
 }
