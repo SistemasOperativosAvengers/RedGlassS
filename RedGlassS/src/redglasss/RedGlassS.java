@@ -8,10 +8,6 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 
-/**
- *
- * @author Balta XD
- */
 //--------------------------------------------------------------el timer
 class reloj implements Runnable{
     int cuenta, veloz;
@@ -150,7 +146,6 @@ class procesamiento implements Runnable{
                  } catch (InterruptedException ex) {
                      Logger.getLogger(procesamiento.class.getName()).log(Level.SEVERE, null, ex);
                  }
-
                  if(r.nextInt(5)==2 && listos.listos.size()>0){ 
                        interrup =1;
                        bloqueadoOListo(interrup);
