@@ -207,7 +207,7 @@ JOptionPane.INFORMATION_MESSAGE);
    
     
 }
-public class RedGlassS {
+public class RedGlassS extends javax.swing.JFrame {
 
     public static void main(String[] args) {
     }
